@@ -5,9 +5,15 @@ authors = ["Bernardo Meurer <meurerbernardo@gmail.com>"]
 edition = "2018"
 build = "build.rs"
 
+[features]
+default = ["dynamic"]
+dynamic = ["metadeps"]
+static = ["cmake"]
+
 [package.metadata.pkg-config]
 libchromaprint = "1.1"
 
 [build-dependencies]
-metadeps = "1.1.2"
 bindgen = "0.47.1"
+cmake = { version="0.1", optional=true  }
+metadeps = { version="1.1.2", optional=true }
