@@ -5,6 +5,11 @@ dist: xenial
 language: rust
 services: docker
 sudo: required
+addons:
+  apt:
+    packages:
+      - cmake
+      - libchromaprint-dev
 
 env:
   global:
@@ -29,7 +34,6 @@ matrix:
 
 before_install:
   - set -e
-  - sudo apt-get install -y libchromaprint-dev
   - rustup self update
   - export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/
 
