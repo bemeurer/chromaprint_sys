@@ -1,9 +1,27 @@
 [package]
 name = "chromaprint_sys"
-version = "0.1.0"
+description = "Low level bindings to Chromaprint"
+
+documentation = "https://github.com/acoustid/chromaprint"
+homepage = "https://acoustid.org/chromaprint"
+repository = "https://github.com/bemeurer/chromaprint_sys"
+
+readme = "./README.md"
+
+keywords = ["chromaprint", "bindings", "sys", "c++", "bindgen", "audio"]
+categories = ["encoding", "external-ffi-bindings", "multimedia::audio", "multimedia"]
+
+license = "BSD-3-Clause"
+license_file = "./LICENSE"
+
+version = "1.0.0"
 authors = ["Bernardo Meurer <meurerbernardo@gmail.com>"]
 edition = "2018"
 build = "build.rs"
+
+[badges]
+travis-ci = { repository = "bemeurer/chromaprint_sys" }
+ntenance = { status = "passively-maintained" }
 
 [features]
 default = ["dynamic"]
