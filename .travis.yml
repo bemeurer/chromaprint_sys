@@ -11,6 +11,7 @@ addons:
             - libchromaprint-dev
     homebrew:
         packages:
+            - gnu-sed
             - cmake
             - chromaprint
             - pkg-config
@@ -29,7 +30,8 @@ matrix:
         - rust: nightly
 
 before_install:
-    - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sed_bin="gsed"; else sed_bin="sed"; fi
+    - $sed_bin -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
     - git submodule update --init --recursive
 script:
     - cargo build
