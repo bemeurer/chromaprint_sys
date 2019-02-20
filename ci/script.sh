@@ -3,6 +3,7 @@
 set -ex
 
 main() {
+    echo "${PKG_CONFIG_PATH}"
     cross build --features=static --target $TARGET
     cross build --features=static --target $TARGET --release
 
