@@ -1,5 +1,4 @@
 # chromaprint_sys [![Build Status][travis-badge]][travis]
----
 
 This crate provides low-level bindings to the [chromaprint][chromaprint] library to Rust.
 
