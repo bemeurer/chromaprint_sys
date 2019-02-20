@@ -14,7 +14,7 @@ categories = ["encoding", "external-ffi-bindings", "multimedia::audio", "multime
 license = "BSD-3-Clause"
 license_file = "./LICENSE"
 
-version = "1.0.0"
+version = "1.0.1"
 authors = ["Bernardo Meurer <meurerbernardo@gmail.com>"]
 edition = "2018"
 build = "build.rs"
