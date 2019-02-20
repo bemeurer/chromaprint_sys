@@ -6,7 +6,7 @@ edition = "2018"
 build = "build.rs"
 
 [package.metadata.pkg-config]
-libchromaprint = "1.4"
+libchromaprint = "1.1"
 
 [build-dependencies]
 metadeps = "1.1.2"
