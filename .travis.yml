@@ -4,7 +4,7 @@ addons:
     packages:
       - cmake
       - libchromaprint-dev
-
+      - ffmpeg
 git:
     submodules: false
 
