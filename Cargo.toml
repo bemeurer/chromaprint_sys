@@ -1,0 +1,13 @@
+[package]
+name = "chromaprint_sys"
+version = "0.1.0"
+authors = ["Bernardo Meurer <meurerbernardo@gmail.com>"]
+edition = "2018"
+build = "build.rs"
+
+[package.metadata.pkg-config]
+libchromaprint = "1.4"
+
+[build-dependencies]
+metadeps = "1.1.2"
+bindgen = "0.47.1"
