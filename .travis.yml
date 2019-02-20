@@ -10,6 +10,8 @@ addons:
     packages:
       - cmake
       - libchromaprint-dev
+git:
+    submodules: false
 
 env:
   global:
@@ -34,6 +36,8 @@ matrix:
 
 before_install:
   - set -e
+  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+  - git submodule update --init --recursive
   - rustup self update
   - export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/
 
