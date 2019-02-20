@@ -14,11 +14,7 @@ matrix:
   include:
     # Linux
     - env: TARGET=x86_64-unknown-linux-gnu
-    - env: TARGET=x86_64-unknown-linux-musl
-
-    # OSX
-    - env: TARGET=x86_64-apple-darwin
-      os: osx
+    - env: TARGET=x86_64-unddknown-linux-musl
 
     # *BSD
     - env: TARGET=x86_64-unknown-freebsd DISABLE_TESTS=1
@@ -30,14 +26,13 @@ matrix:
     # Testing other channels
     - env: TARGET=x86_64-unknown-linux-gnu
       rust: nightly
-    - env: TARGET=x86_64-apple-darwin
-      os: osx
-      rust: nightly
 
 before_install:
   - set -e
   - sudo apt-get install -y libchromaprint-dev
   - rustup self update
+  - export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/
+
 
 install:
   - sh ci/install.sh
