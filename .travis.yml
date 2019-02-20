@@ -9,8 +9,11 @@ addons:
         packages:
             - cmake
             - libchromaprint-dev
-            - ffmpeg
-
+    homebrew:
+        packages:
+            - cmake
+            - chromaprint
+            - pkg-config
 git:
     submodules: false
 
@@ -28,7 +31,6 @@ matrix:
 before_install:
     - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
     - git submodule update --init --recursive
-
 script:
     - cargo build
     - cargo test
