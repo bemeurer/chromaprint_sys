@@ -1,73 +1,36 @@
-# Based on the "trust" template v0.1.2
-# https://github.com/japaric/trust/tree/v0.1.2
-
 dist: xenial
-language: rust
-services: docker
-sudo: required
 addons:
   apt:
     packages:
       - cmake
       - libchromaprint-dev
+
 git:
     submodules: false
 
-env:
-  global:
-    - CRATE_NAME=chromaprint_sys
+language: rust
+rust:
+  - stable
+  - beta
+  - nightly
 
 matrix:
-  include:
-    # Linux
-    - env: TARGET=x86_64-unknown-linux-gnu
-    - env: TARGET=x86_64-unddknown-linux-musl
-
-    # *BSD
-    - env: TARGET=x86_64-unknown-freebsd DISABLE_TESTS=1
-    - env: TARGET=x86_64-unknown-netbsd DISABLE_TESTS=1
-
-    # Windows
-    - env: TARGET=x86_64-pc-windows-gnu
-
-    # Testing other channels
-    - env: TARGET=x86_64-unknown-linux-gnu
-      rust: nightly
+  allow_failures:
+    - rust: nightly
 
 before_install:
-  - set -e
   - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
   - git submodule update --init --recursive
   - rustup self update
-  - export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/
-
-
-install:
-  - sh ci/install.sh
-  - source ~/.cargo/env || true
-
 script:
-  - bash ci/script.sh
-
-after_script: set +e
-
-before_deploy:
-  - sh ci/before_deploy.sh
-
-deploy:
-  api_key:
-    secure: zewDDGeFQlH9oXroTpoEgB/f2yevY5NNxTWgDmq2j9nB5RabfGTmCTfz31zC0IxysVS9Iwbvb5Zx+hrLZRyB58jvHrWgJnEx3sJhnv0UgYnvXhveN01lEGssRELWkclWblIIRI0zozZdKjyjus9sXkWUwkCoNKEpBnsWnZ9QIiP607VaxdpdZKy/YCX4jOzbeVSUtyUqCRqQXrR98YrWjeLpwIYM1f22LBVCD0gzDuWVS22ZIbvGVbAYetPEuw3Us7aFSdDgZgexgxW8PUsoZ+cZUU7ubwCoeHWkekUrSFaY6fNuDcHIejzPSHe1VUOeJ7O6g0Yz8wZKOaQAl2hXQwKNF3d6BEl0O7ZGAUovIJkVpybabkRuxEQGyf3zvvjhMzCXM57AlDrgInGZ/VxLkUL1iTODtI5XT0QoZ9392Sm8t2AHCXOajeZSKBR0ivsi4rBbO7JyKz7AXptIjaMSZtl5gFjc7mLageHNZSQNnYuLBV3iDneZThT2c+pS8ZDjh7zG+Ug8VffmJPj4vpW1mseTqq4dtCkMfsP+RxVv/7vvQj7LG89p45Eqz7lrd8MDhkKr379lX6CCOK5vkvHsgsSgJh/Axpy9buVS1RdniDJ3ZWZkLsGK/LEDgxU9B4qcJL5MN8ZlVI/MiNWEssg2VSyFXZl16NIK23Ov0uwzwsw=
-  file_glob: true
-  file: $CRATE_NAME-$TRAVIS_TAG-$TARGET.*
-  on:
-    # TODO Here you can pick which targets will generate binary releases
-    # In this example, there are some targets that are tested using the stable
-    # and nightly channels. This condition makes sure there is only one release
-    # for such targets and that's generated using the stable channel
-    condition: $TRAVIS_RUST_VERSION = stable
-    tags: true
-  provider: releases
-  skip_cleanup: true
+  - cargo build
+  - cargo test
+  - cargo build --no-default-features --features=static
+  - cargo test --no-default-features --features=static
+  - cargo build --release
+  - cargo test --release
+  - cargo build --release --no-default-features --features=static
+  - cargo test --release --no-default-features --features=static
 
 cache: cargo
 before_cache:
@@ -76,8 +39,6 @@ before_cache:
 
 branches:
   only:
-    # release tags
-    - /^v\d+\.\d+\.\d+.*$/
     - master
 
 notifications:
