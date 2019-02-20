@@ -8,7 +8,7 @@ repository = "https://github.com/bemeurer/chromaprint_sys"
 
 readme = "./README.md"
 
-keywords = ["chromaprint", "bindings", "sys", "c++", "bindgen", "audio"]
+keywords = ["chromaprint", "bindings", "sys", "cpp", "bindgen", "audio"]
 categories = ["encoding", "external-ffi-bindings", "multimedia::audio", "multimedia"]
 
 license = "BSD-3-Clause"
@@ -21,7 +21,7 @@ build = "build.rs"
 
 [badges]
 travis-ci = { repository = "bemeurer/chromaprint_sys" }
-ntenance = { status = "passively-maintained" }
+maintenance = { status = "passively-maintained" }
 
 [features]
 default = ["dynamic"]
