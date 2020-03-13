@@ -28,6 +28,6 @@ static = ["cmake"]
 libchromaprint = "1.1"
 
 [build-dependencies]
-bindgen = "0.47.1"
-cmake = { version="0.1", optional=true  }
-metadeps = { version="1.1.2", optional=true }
+bindgen = "0.53.2"
+cmake = { version = "0.1.42", optional = true }
+metadeps = { version = "1.1.2", optional = true }

@@ -27,6 +27,8 @@ in
     crate2nix
     niv
     nixpkgs-fmt
+
+    pkg-config
     rustFull
   ];
 }
