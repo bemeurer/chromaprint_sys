@@ -4,7 +4,7 @@ description = "Low level bindings to Chromaprint"
 
 documentation = "https://github.com/acoustid/chromaprint"
 homepage = "https://acoustid.org/chromaprint"
-repository = "https://github.com/bemeurer/chromaprint_sys"
+repository = "https://github.com/lovesegfault/chromaprint_sys"
 
 readme = "./README.md"
 
@@ -18,10 +18,6 @@ version = "1.0.1"
 authors = ["Bernardo Meurer <meurerbernardo@gmail.com>"]
 edition = "2018"
 build = "build.rs"
-
-[badges]
-travis-ci = { repository = "bemeurer/chromaprint_sys" }
-maintenance = { status = "passively-maintained" }
 
 [features]
 default = ["dynamic"]
