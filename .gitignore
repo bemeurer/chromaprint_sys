@@ -1,4 +1,6 @@
-/target
-**/*.rs.bk
+# Rust
 Cargo.lock
-__bindgen*
+/target/
+# Nix
+result
+result-*
