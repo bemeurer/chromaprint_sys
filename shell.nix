@@ -1,5 +1,4 @@
-with (import ./. {});
-pkgs.mkShell {
-  name = "chromaprint_sys";
-  buildInputs = shellBuildInputs;
-}
+with import ./. {};
+chromaprint_sys.overrideAttrs (drv: {
+  buildInputs = drv.buildInputs ++ shellBuildInputs;
+})
