@@ -314,7 +314,7 @@ rec {
       };
       "chromaprint_sys" = rec {
         crateName = "chromaprint_sys";
-        version = "1.0.1";
+        version = "0.2.0";
         edition = "2018";
         src = (builtins.filterSource sourceFilter ./.);
         authors = [
@@ -326,22 +326,11 @@ rec {
             packageId = "bindgen";
           }
           {
-            name = "cmake";
-            packageId = "cmake";
-            optional = true;
-          }
-          {
-            name = "metadeps";
-            packageId = "metadeps";
-            optional = true;
+            name = "pkg-config";
+            packageId = "pkg-config";
           }
         ];
-        features = {
-          "default" = [ "dynamic" ];
-          "dynamic" = [ "metadeps" ];
-          "static" = [ "cmake" ];
-        };
-        resolvedDefaultFeatures = [ "cmake" "default" "dynamic" "metadeps" "static" ];
+        
       };
       "clang-sys" = rec {
         crateName = "clang-sys";
@@ -442,22 +431,6 @@ rec {
         };
         resolvedDefaultFeatures = [ "ansi_term" "atty" "color" "default" "strsim" "suggestions" "vec_map" ];
       };
-      "cmake" = rec {
-        crateName = "cmake";
-        version = "0.1.42";
-        edition = "2015";
-        sha256 = "0qkwibkvx5xjazvv9v8gvdlpky2jhjxvcz014nrixgzqfyv2byw1";
-        authors = [
-          "Alex Crichton <alex@alexcrichton.com>"
-        ];
-        dependencies = [
-          {
-            name = "cc";
-            packageId = "cc";
-          }
-        ];
-        
-      };
       "env_logger" = rec {
         crateName = "env_logger";
         version = "0.7.1";
@@ -497,21 +470,6 @@ rec {
           "default" = [ "termcolor" "atty" "humantime" "regex" ];
         };
         resolvedDefaultFeatures = [ "atty" "default" "humantime" "regex" "termcolor" ];
-      };
-      "error-chain" = rec {
-        crateName = "error-chain";
-        version = "0.10.0";
-        edition = "2015";
-        sha256 = "1y1gyj9g5c3k1nzkvxrgry8v9k86kcc585mczrm3qz019s35shyr";
-        authors = [
-          "Brian Anderson <banderson@mozilla.com>"
-          "Paul Colomiets <paul@colomiets.name>"
-          "Colin Kiegel <kiegel@gmx.de>"
-          "Yamakaky <yamakaky@yamaworld.fr>"
-        ];
-        features = {
-          "default" = [ "backtrace" "example_generated" ];
-        };
       };
       "glob" = rec {
         crateName = "glob";
@@ -656,32 +614,6 @@ rec {
           "use_std" = [ "std" ];
         };
         resolvedDefaultFeatures = [ "default" "std" "use_std" ];
-      };
-      "metadeps" = rec {
-        crateName = "metadeps";
-        version = "1.1.2";
-        edition = "2015";
-        sha256 = "1hjla9ypycqw1snd2qf87cckcc0d5z5qvxpcijn5yrrs3f825cbk";
-        authors = [
-          "Josh Triplett <josh@joshtriplett.org>"
-        ];
-        dependencies = [
-          {
-            name = "error-chain";
-            packageId = "error-chain";
-            usesDefaultFeatures = false;
-          }
-          {
-            name = "pkg-config";
-            packageId = "pkg-config";
-          }
-          {
-            name = "toml";
-            packageId = "toml";
-            usesDefaultFeatures = false;
-          }
-        ];
-        
       };
       "nom" = rec {
         crateName = "nom";
@@ -925,18 +857,6 @@ rec {
           }
         ];
         
-      };
-      "toml" = rec {
-        crateName = "toml";
-        version = "0.2.1";
-        edition = "2015";
-        sha256 = "1d1cz43bxrx4fd6j2p6myckf81f72bp47akg36y3flxjkhj60svk";
-        authors = [
-          "Alex Crichton <alex@alexcrichton.com>"
-        ];
-        features = {
-          "default" = [ "rustc-serialize" ];
-        };
       };
       "unicode-width" = rec {
         crateName = "unicode-width";

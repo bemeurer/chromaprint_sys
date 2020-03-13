@@ -1,7 +1,7 @@
 [package]
 name = "chromaprint_sys"
 authors = ["Bernardo Meurer <meurerbernardo@gmail.com>"]
-version = "1.0.1"
+version = "0.2.0"
 
 categories = ["encoding", "external-ffi-bindings", "multimedia::audio", "multimedia"]
 description = "Low level bindings to Chromaprint"
@@ -13,15 +13,6 @@ license = "BSD-3-Clause"
 readme = "./README.md"
 repository = "https://github.com/lovesegfault/chromaprint_sys"
 
-[features]
-default = ["dynamic"]
-dynamic = ["metadeps"]
-static = ["cmake"]
-
-[package.metadata.pkg-config]
-libchromaprint = "1.1"
-
 [build-dependencies]
 bindgen = "0.53.2"
-cmake = { version = "0.1.42", optional = true }
-metadeps = { version = "1.1.2", optional = true }
+pkg-config = "0.3.17"
