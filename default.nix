@@ -3,7 +3,14 @@ let
   generated = pkgs.callPackage ./Cargo.nix {
     inherit pkgs;
     defaultCrateOverrides = pkgs.defaultCrateOverrides // {
-      # example-crate = attrs: { buildInputs = [ openssl ]; };
+      chromaprint_sys = attrs: {
+        nativeBuildInputs = with pkgs; [ pkg-config ];
+        buildInputs = with pkgs; [
+          clang
+          chromaprint
+        ];
+        LIBCLANG_PATH = "${pkgs.clang.cc.lib}/lib";
+      };
     };
   };
   tested = generated.rootCrate.build.override {
@@ -13,7 +20,7 @@ let
 in
 {
   inherit pkgs;
-  begonia = tested;
+  chromaprint_sys = tested;
   shellBuildInputs = with pkgs; [
     cachix
     cargo-edit
