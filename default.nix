@@ -9,13 +9,14 @@ let
           clang
           chromaprint
         ];
+        src = pkgs.lib.sourceFilesBySuffices ./. [ ".rs" ".opus" ".lock" ];
         LIBCLANG_PATH = "${pkgs.clang.cc.lib}/lib";
       };
     };
   };
   tested = generated.rootCrate.build.override {
     runTests = true;
-    # testInputs = with pkgs; [ hello ];
+    # testInputs = with pkgs; [ chromaprint ];
   };
 in
 {
@@ -26,6 +27,7 @@ in
     cargo-edit
     crate2nix
     niv
+    rnix-lsp
     nixpkgs-fmt
 
     pkg-config
