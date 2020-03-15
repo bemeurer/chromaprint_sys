@@ -330,6 +330,16 @@ rec {
             packageId = "pkg-config";
           }
         ];
+        devDependencies = [
+          {
+            name = "rand";
+            packageId = "rand";
+          }
+          {
+            name = "rand_chacha";
+            packageId = "rand_chacha";
+          }
+        ];
         
       };
       "clang-sys" = rec {
@@ -470,6 +480,37 @@ rec {
           "default" = [ "termcolor" "atty" "humantime" "regex" ];
         };
         resolvedDefaultFeatures = [ "atty" "default" "humantime" "regex" "termcolor" ];
+      };
+      "getrandom" = rec {
+        crateName = "getrandom";
+        version = "0.1.14";
+        edition = "2018";
+        sha256 = "1sq30li71h19rhnhs1h6576ja68insajx8wvh1nn088r8pc8vg3s";
+        authors = [
+          "The Rand Project Developers"
+        ];
+        dependencies = [
+          {
+            name = "cfg-if";
+            packageId = "cfg-if";
+          }
+          {
+            name = "libc";
+            packageId = "libc";
+            usesDefaultFeatures = false;
+            target = { target, features }: target."unix";
+          }
+          {
+            name = "wasi";
+            packageId = "wasi";
+            target = { target, features }: (target."os" == "wasi");
+          }
+        ];
+        features = {
+          "rustc-dep-of-std" = [ "compiler_builtins" "core" ];
+          "test-in-browser" = [ "wasm-bindgen" ];
+        };
+        resolvedDefaultFeatures = [ "std" ];
       };
       "glob" = rec {
         crateName = "glob";
@@ -665,6 +706,19 @@ rec {
         ];
         
       };
+      "ppv-lite86" = rec {
+        crateName = "ppv-lite86";
+        version = "0.2.6";
+        edition = "2018";
+        sha256 = "06zs492wbms7j5qhy58cs3976c7kyc47rx0d6fn63rgvp580njbl";
+        authors = [
+          "The CryptoCorrosion Contributors"
+        ];
+        features = {
+          "default" = [ "std" "simd" ];
+        };
+        resolvedDefaultFeatures = [ "simd" "std" ];
+      };
       "proc-macro2" = rec {
         crateName = "proc-macro2";
         version = "1.0.9";
@@ -713,6 +767,130 @@ rec {
           "default" = [ "proc-macro" ];
           "proc-macro" = [ "proc-macro2/proc-macro" ];
         };
+      };
+      "rand" = rec {
+        crateName = "rand";
+        version = "0.7.3";
+        edition = "2018";
+        sha256 = "00sdaimkbz491qgi6qxkv582yivl32m2jd401kzbn94vsiwicsva";
+        authors = [
+          "The Rand Project Developers"
+          "The Rust Project Developers"
+        ];
+        dependencies = [
+          {
+            name = "getrandom";
+            packageId = "getrandom";
+            rename = "getrandom_package";
+            optional = true;
+          }
+          {
+            name = "libc";
+            packageId = "libc";
+            optional = true;
+            usesDefaultFeatures = false;
+            target = { target, features }: target."unix";
+          }
+          {
+            name = "rand_chacha";
+            packageId = "rand_chacha";
+            usesDefaultFeatures = false;
+            target = { target, features }: (!(target."os" == "emscripten"));
+          }
+          {
+            name = "rand_core";
+            packageId = "rand_core";
+          }
+          {
+            name = "rand_hc";
+            packageId = "rand_hc";
+            target = { target, features }: (target."os" == "emscripten");
+          }
+        ];
+        devDependencies = [
+          {
+            name = "rand_hc";
+            packageId = "rand_hc";
+          }
+        ];
+        features = {
+          "alloc" = [ "rand_core/alloc" ];
+          "default" = [ "std" ];
+          "getrandom" = [ "getrandom_package" "rand_core/getrandom" ];
+          "nightly" = [ "simd_support" ];
+          "simd_support" = [ "packed_simd" ];
+          "small_rng" = [ "rand_pcg" ];
+          "std" = [ "rand_core/std" "rand_chacha/std" "alloc" "getrandom" "libc" ];
+          "stdweb" = [ "getrandom_package/stdweb" ];
+          "wasm-bindgen" = [ "getrandom_package/wasm-bindgen" ];
+        };
+        resolvedDefaultFeatures = [ "alloc" "default" "getrandom" "getrandom_package" "libc" "std" ];
+      };
+      "rand_chacha" = rec {
+        crateName = "rand_chacha";
+        version = "0.2.2";
+        edition = "2018";
+        sha256 = "00il36fkdbsmpr99p9ksmmp6dn1md7rmnwmz0rr77jbrca2yvj7l";
+        authors = [
+          "The Rand Project Developers"
+          "The Rust Project Developers"
+          "The CryptoCorrosion Contributors"
+        ];
+        dependencies = [
+          {
+            name = "ppv-lite86";
+            packageId = "ppv-lite86";
+            usesDefaultFeatures = false;
+            features = [ "simd" ];
+          }
+          {
+            name = "rand_core";
+            packageId = "rand_core";
+          }
+        ];
+        features = {
+          "default" = [ "std" "simd" ];
+          "std" = [ "ppv-lite86/std" ];
+        };
+        resolvedDefaultFeatures = [ "default" "simd" "std" ];
+      };
+      "rand_core" = rec {
+        crateName = "rand_core";
+        version = "0.5.1";
+        edition = "2018";
+        sha256 = "06bdvx08v3rkz451cm7z59xwwqn1rkfh6v9ay77b14f8dwlybgch";
+        authors = [
+          "The Rand Project Developers"
+          "The Rust Project Developers"
+        ];
+        dependencies = [
+          {
+            name = "getrandom";
+            packageId = "getrandom";
+            optional = true;
+          }
+        ];
+        features = {
+          "serde1" = [ "serde" ];
+          "std" = [ "alloc" "getrandom" "getrandom/std" ];
+        };
+        resolvedDefaultFeatures = [ "alloc" "getrandom" "std" ];
+      };
+      "rand_hc" = rec {
+        crateName = "rand_hc";
+        version = "0.2.0";
+        edition = "2018";
+        sha256 = "0g31sqwpmsirdlwr0svnacr4dbqyz339im4ssl9738cjgfpjjcfa";
+        authors = [
+          "The Rand Project Developers"
+        ];
+        dependencies = [
+          {
+            name = "rand_core";
+            packageId = "rand_core";
+          }
+        ];
+        
       };
       "regex" = rec {
         crateName = "regex";
@@ -931,6 +1109,20 @@ rec {
           "Sergio Benitez <sb@sergio.bz>"
         ];
         
+      };
+      "wasi" = rec {
+        crateName = "wasi";
+        version = "0.9.0+wasi-snapshot-preview1";
+        edition = "2018";
+        sha256 = "06g5v3vrdapfzvfq662cij7v8a1flwr2my45nnncdv2galrdzkfc";
+        authors = [
+          "The Cranelift Project Developers"
+        ];
+        features = {
+          "default" = [ "std" ];
+          "rustc-dep-of-std" = [ "compiler_builtins" "core" "rustc-std-workspace-alloc" ];
+        };
+        resolvedDefaultFeatures = [ "default" "std" ];
       };
       "which" = rec {
         crateName = "which";
