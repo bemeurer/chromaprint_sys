@@ -7,7 +7,7 @@ let
         nativeBuildInputs = with pkgs; [ pkg-config ];
         buildInputs = with pkgs; [
           clang
-          chromaprint
+          (pkgs.enableDebugging chromaprint)
         ];
         src = pkgs.lib.sourceFilesBySuffices ./. [ ".rs" ".opus" ".lock" ];
         LIBCLANG_PATH = "${pkgs.clang.cc.lib}/lib";
@@ -15,7 +15,7 @@ let
     };
   };
   tested = generated.rootCrate.build.override {
-    runTests = true;
+    runTests = false;
     # testInputs = with pkgs; [ chromaprint ];
   };
 in
@@ -26,9 +26,12 @@ in
     cachix
     cargo-edit
     crate2nix
+    gdb
+    cgdb
     niv
-    rnix-lsp
     nixpkgs-fmt
+    rnix-lsp
+    rr
 
     pkg-config
     rustFull
