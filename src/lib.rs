@@ -21,21 +21,24 @@ mod tests {
     #[test]
     fn test_dummy_acoustid() {
         let mut rng = ChaChaRng::seed_from_u64(0xdeadbeef);
-        let sample_rate = 44100;
-        let channel_count = 2;
-        let duration = 30;
+        let fingerprint;
+        const sample_rate: i32 = 44100;
+        const channel_count: i32 = 2;
+        const duration: i32 = 5;
         unsafe {
             let ctx = chromaprint_new(ChromaprintAlgorithm_CHROMAPRINT_ALGORITHM_DEFAULT as i32);
             check!(chromaprint_start(ctx, sample_rate, channel_count));
-            for _ in 1..=(channel_count * duration * sample_rate) {
-                check!(chromaprint_feed(ctx, &rng.gen() as *const i16, 1));
-            }
+            let data: Vec<i16> = (0..(channel_count * duration * sample_rate))
+                .map(|_| rng.gen())
+                .collect();
+            check!(chromaprint_feed(ctx, data.as_ptr(), data.len() as i32));
             check!(chromaprint_finish(ctx));
             let mut fp: *mut i8 = std::ptr::null_mut();
             check!(chromaprint_get_fingerprint(ctx, &mut fp as *mut *mut i8));
-            let fp = std::ffi::CStr::from_ptr(fp);
-            eprintln!("{}", fp.to_str().unwrap());
+            fingerprint = std::ffi::CString::from_raw(fp).into_string().unwrap();
             chromaprint_free(ctx);
         }
+        let expected = "AQAAE5EkSUmSJEqkwMcBHT98wMSP4zAOUMdx3AflhBXCGmeuEmdI";
+        assert_eq!(&fingerprint, expected);
     }
 }
