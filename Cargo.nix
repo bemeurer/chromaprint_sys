@@ -320,17 +320,7 @@ rec {
         authors = [
           "Bernardo Meurer <meurerbernardo@gmail.com>"
         ];
-        buildDependencies = [
-          {
-            name = "bindgen";
-            packageId = "bindgen";
-          }
-          {
-            name = "pkg-config";
-            packageId = "pkg-config";
-          }
-        ];
-        devDependencies = [
+        dependencies = [
           {
             name = "rand";
             packageId = "rand";
@@ -340,7 +330,25 @@ rec {
             packageId = "rand_chacha";
           }
         ];
-        
+        buildDependencies = [
+          {
+            name = "bindgen";
+            packageId = "bindgen";
+          }
+          {
+            name = "cmake";
+            packageId = "cmake";
+            optional = true;
+          }
+          {
+            name = "pkg-config";
+            packageId = "pkg-config";
+          }
+        ];
+        features = {
+          "vendor" = [ "cmake" ];
+        };
+        resolvedDefaultFeatures = [ "cmake" "default" "vendor" ];
       };
       "clang-sys" = rec {
         crateName = "clang-sys";
@@ -440,6 +448,22 @@ rec {
           "yaml" = [ "yaml-rust" ];
         };
         resolvedDefaultFeatures = [ "ansi_term" "atty" "color" "default" "strsim" "suggestions" "vec_map" ];
+      };
+      "cmake" = rec {
+        crateName = "cmake";
+        version = "0.1.42";
+        edition = "2015";
+        sha256 = "0qkwibkvx5xjazvv9v8gvdlpky2jhjxvcz014nrixgzqfyv2byw1";
+        authors = [
+          "Alex Crichton <alex@alexcrichton.com>"
+        ];
+        dependencies = [
+          {
+            name = "cc";
+            packageId = "cc";
+          }
+        ];
+        
       };
       "env_logger" = rec {
         crateName = "env_logger";
