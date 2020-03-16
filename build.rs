@@ -5,7 +5,8 @@ use std::path::PathBuf;
 fn main() {
     let out_path = PathBuf::from(std::env::var("OUT_DIR").unwrap());
     pkg_config::Config::new()
-        .atleast_version("1.1")
+        .atleast_version("1.4.3")
+        .statik(true)
         .probe("libchromaprint")
         .expect("Failed to find libchromaprint");
     bindgen::Builder::default()
