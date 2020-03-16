@@ -320,16 +320,6 @@ rec {
         authors = [
           "Bernardo Meurer <meurerbernardo@gmail.com>"
         ];
-        dependencies = [
-          {
-            name = "rand";
-            packageId = "rand";
-          }
-          {
-            name = "rand_chacha";
-            packageId = "rand_chacha";
-          }
-        ];
         buildDependencies = [
           {
             name = "bindgen";
@@ -343,6 +333,16 @@ rec {
           {
             name = "pkg-config";
             packageId = "pkg-config";
+          }
+        ];
+        devDependencies = [
+          {
+            name = "rand";
+            packageId = "rand";
+          }
+          {
+            name = "rand_chacha";
+            packageId = "rand_chacha";
           }
         ];
         features = {
