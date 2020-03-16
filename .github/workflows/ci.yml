@@ -28,7 +28,7 @@ jobs:
           git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
       - name: Dependencies
         run: |
-          sudo apt install -y libchromaprint-dev ffmpeg llvm
+          sudo apt install -y libchromaprint-dev ffmpeg llvm cmake pkg-config libavcodec-dev libavresample-dev libavutil-dev libswresample-dev libswscale-dev
       - name: Toolchain
         uses: actions-rs/toolchain@v1
         with:
