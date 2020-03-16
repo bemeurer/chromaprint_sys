@@ -40,7 +40,7 @@ jobs:
       - name: Nix
         uses: cachix/install-nix-action@v7
       - name: Format
-        run: nix-shell --run "cargo fmt --all --features vendor -- --check"
+        run: nix-shell --run "cargo fmt --all -- --check"
       - name: Build
         run: nix-shell --run "cargo build --features vendor"
       - name: Clippy
