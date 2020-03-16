@@ -2,7 +2,7 @@
 let
   generated = pkgs.callPackage ./Cargo.nix {
     inherit pkgs;
-    release = false;
+    release = true;
     defaultCrateOverrides = pkgs.defaultCrateOverrides // {
       chromaprint_sys = attrs: {
         nativeBuildInputs = with pkgs; [ pkg-config ];
@@ -13,19 +13,17 @@ let
           cmake
           ffmpeg_4
         ];
-        src = pkgs.lib.sourceFilesBySuffices ./. [ ".rs" ".opus" ".lock" ];
         LIBCLANG_PATH = "${pkgs.clang.cc.lib}/lib";
       };
     };
   };
-  tested = generated.rootCrate.build.override {
+  chromaprint_sys = generated.rootCrate.build.override {
     runTests = false;
-    # testInputs = with pkgs; [ chromaprint ];
+    features = [ "vendor" ];
   };
 in
 {
-  inherit pkgs;
-  chromaprint_sys = tested;
+  inherit chromaprint_sys pkgs;
   shellBuildInputs = with pkgs; [
     cargo-edit
     crate2nix
