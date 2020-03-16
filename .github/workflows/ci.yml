@@ -5,18 +5,8 @@ on:
   pull_request:
     branches: [ "**" ]
 jobs:
-  build:
+  build-link:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        feature:
-          - ""
-          - "--features vendor"
-        rust:
-          - stable
-          - beta
-          - nightly
-          # - 1.39.0  # MSRV
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -26,36 +16,37 @@ jobs:
           auth_header="$(git config --local --get http.https://github.com/.extraheader)"
           git submodule sync --recursive
           git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
-      - name: Dependencies
-        run: |
-          sudo apt install -y libchromaprint-dev ffmpeg llvm cmake pkg-config libavcodec-dev libavresample-dev libavutil-dev libswresample-dev libswscale-dev
-      - name: Toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: ${{ matrix.rust }}
-          override: true
-          components: rustfmt, clippy
+      - name: Nix
+        uses: cachix/install-nix-action@v7
       - name: Format
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -- --check
+        run: nix-shell --run "cargo fmt --all -- --check"
       - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --no-default-features ${{ matrix.feature }}
+        run: nix-shell --run "cargo build"
       - name: Clippy
-        uses: actions-rs/clippy-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: --no-default-features ${{ matrix.feature }}
+        run: nix-shell --run "cargo clippy -- -D warnings"
       - name: Test
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --no-default-features ${{ matrix.feature }}
+        run: nix-shell --run "cargo test"
+  build-vendor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Checkout submodules
+        shell: bash
+        run: |
+          auth_header="$(git config --local --get http.https://github.com/.extraheader)"
+          git submodule sync --recursive
+          git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
+      - name: Nix
+        uses: cachix/install-nix-action@v7
+      - name: Format
+        run: nix-shell --run "cargo fmt --all --features vendor -- --check"
+      - name: Build
+        run: nix-shell --run "cargo build --features vendor"
+      - name: Clippy
+        run: nix-shell --run "cargo clippy --features vendor -- -D warnings"
+      - name: Test
+        run: nix-shell --run "cargo test --features vendor"
   nix-build:
     runs-on: ubuntu-latest
     steps:
