@@ -6,9 +6,12 @@ let
     defaultCrateOverrides = pkgs.defaultCrateOverrides // {
       chromaprint_sys = attrs: {
         nativeBuildInputs = with pkgs; [ pkg-config ];
-        buildInputs = [
-          pkgs.clang
-          (pkgs.enableDebugging pkgs.chromaprint)
+        buildInputs = with pkgs; [
+          chromaprint
+          clang
+          # vendoring
+          cmake
+          ffmpeg_4
         ];
         src = pkgs.lib.sourceFilesBySuffices ./. [ ".rs" ".opus" ".lock" ];
         LIBCLANG_PATH = "${pkgs.clang.cc.lib}/lib";
@@ -24,18 +27,16 @@ in
   inherit pkgs;
   chromaprint_sys = tested;
   shellBuildInputs = with pkgs; [
-    cachix
     cargo-edit
     crate2nix
-    gdb
-    cgdb
     niv
     nixpkgs-fmt
     rnix-lsp
-    rr
-    llvmPackages_latest.lldb
 
-    pkg-config
+    gdb
+    cgdb
+    rr
+
     rustFull
   ];
 }
