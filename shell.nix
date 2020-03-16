@@ -1,4 +1,6 @@
 with import ./. {};
-chromaprint_sys.overrideAttrs (drv: {
-  buildInputs = drv.buildInputs ++ shellBuildInputs;
-})
+chromaprint_sys.overrideAttrs (
+  drv: {
+    buildInputs = drv.buildInputs ++ shellBuildInputs;
+  }
+)
