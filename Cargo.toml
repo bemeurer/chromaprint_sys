@@ -13,6 +13,9 @@ license = "BSD-3-Clause"
 readme = "./README.md"
 repository = "https://github.com/lovesegfault/chromaprint_sys"
 
+[features]
+default = []
+vendor = ["cmake"]
 
 [dependencies]
 rand = "0.7.3"
@@ -21,3 +24,4 @@ rand_chacha = "0.2.2"
 [build-dependencies]
 bindgen = "0.53.2"
 pkg-config = "0.3.17"
+cmake = { version = "0.1", optional = true }

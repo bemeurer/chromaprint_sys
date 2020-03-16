@@ -1,14 +1,41 @@
-use bindgen;
-use pkg_config;
 use std::path::PathBuf;
 
-fn main() {
-    let out_path = PathBuf::from(std::env::var("OUT_DIR").unwrap());
+#[cfg(not(feature = "vendor"))]
+fn dyn_link() {
     pkg_config::Config::new()
         .atleast_version("1.4.3")
         .statik(true)
         .probe("libchromaprint")
         .expect("Failed to find libchromaprint");
+}
+
+#[cfg(feature = "vendor")]
+fn vendor() {
+    println!("cargo:rerun-if-changed=vendor/chromaprint");
+    let build_type = if cfg!(debug_assertions) {
+        "DEBUG"
+    } else {
+        "RELEASE"
+    };
+    let lib_path = cmake::Config::new("vendor/chromaprint")
+        .define("CMAKE_BUILD_TYPE", build_type)
+        .define("BUILD_SHARED_LIBS", "OFF")
+        .define("FFT_LIB", "avfft")
+        .build();
+    println!(
+        "cargo:rustc-link-search=native={}",
+        lib_path.join("lib").display()
+    );
+    println!("cargo:rustc-link-lib=dylib=chromaprint");
+}
+
+fn main() {
+    #[cfg(not(feature = "vendor"))]
+    dyn_link();
+    #[cfg(feature = "vendor")]
+    vendor();
+
+    let out_path = PathBuf::from(std::env::var("OUT_DIR").unwrap());
     bindgen::Builder::default()
         .generate_comments(true)
         .header_contents("wrapper.h", "#include<chromaprint.h>")
