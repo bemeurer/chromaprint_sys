@@ -19,7 +19,7 @@ let
   };
   chromaprint_sys = generated.rootCrate.build.override {
     runTests = false;
-    features = [ "vendor" ];
+    # features = [ "vendor" ];
   };
 in
 {
