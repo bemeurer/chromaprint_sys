@@ -2,12 +2,13 @@
 let
   generated = pkgs.callPackage ./Cargo.nix {
     inherit pkgs;
+    release = false;
     defaultCrateOverrides = pkgs.defaultCrateOverrides // {
       chromaprint_sys = attrs: {
         nativeBuildInputs = with pkgs; [ pkg-config ];
-        buildInputs = with pkgs; [
-          clang
-          (pkgs.enableDebugging chromaprint)
+        buildInputs = [
+          pkgs.clang
+          (pkgs.enableDebugging pkgs.chromaprint)
         ];
         src = pkgs.lib.sourceFilesBySuffices ./. [ ".rs" ".opus" ".lock" ];
         LIBCLANG_PATH = "${pkgs.clang.cc.lib}/lib";
@@ -32,6 +33,7 @@ in
     nixpkgs-fmt
     rnix-lsp
     rr
+    llvmPackages_latest.lldb
 
     pkg-config
     rustFull
