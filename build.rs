@@ -19,7 +19,7 @@ fn vendor() {
     };
     let lib_path = cmake::Config::new("vendor/chromaprint")
         .define("CMAKE_BUILD_TYPE", build_type)
-        .define("BUILD_SHARED_LIBS", "OFF")
+        .define("BUILD_SHARED_LIBS", "ON")
         .define("FFT_LIB", "avfft")
         .build();
     println!(
