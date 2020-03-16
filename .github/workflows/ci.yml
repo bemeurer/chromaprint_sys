@@ -10,8 +10,8 @@ jobs:
     strategy:
       matrix:
         feature:
-          - ''
-          - vendor
+          - ""
+          - "--features vendor"
         rust:
           - stable
           - beta
@@ -45,17 +45,17 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --no-default-features --features ${{ matrix.feature }}
+          args: --no-default-features ${{ matrix.feature }}
       - name: Clippy
         uses: actions-rs/clippy-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          args: --no-default-features --features ${{ matrix.feature }}
+          args: --no-default-features ${{ matrix.feature }}
       - name: Test
         uses: actions-rs/cargo@v1
         with:
           command: test
-          args: --no-default-features --features ${{ matrix.feature }}
+          args: --no-default-features ${{ matrix.feature }}
   nix-build:
     runs-on: ubuntu-latest
     steps:
