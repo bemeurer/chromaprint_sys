@@ -37,10 +37,9 @@ fn main() {
 
     let out_path = PathBuf::from(std::env::var("OUT_DIR").unwrap());
     bindgen::Builder::default()
-        .generate_comments(true)
         .header_contents("wrapper.h", "#include<chromaprint.h>")
+        .generate_comments(true)
         .layout_tests(true)
-        .no_copy("(?i)mutex")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
         .rustfmt_bindings(true)
         .generate()
