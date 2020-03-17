@@ -69,7 +69,6 @@ rec {
     # Many of the fields are passed one-to-one to buildRustCrate.
     #
     # Noteworthy:
-    # * `crateBin = [{name = ","; path = ",";}];`: a hack to disable building the binary.
     # * `dependencies`/`buildDependencies`: similar to the corresponding fields for buildRustCrate.
     #   but with additional information which is used during dependency/feature resolution.
     # * `resolvedDependencies`: the selected default features reported by cargo - only included for debugging.
@@ -152,8 +151,7 @@ rec {
         crateName = "bindgen";
         version = "0.53.2";
         edition = "2015";
-        # Hack to suppress building binaries
-        crateBin = [ { name = ","; path = ","; } ];
+        crateBin = [];
         sha256 = "1j78830czv9c7xy1fdqaqlfn2rjnrmsrfzkw1v5vhdd3d5m6vckb";
         authors = [
           "Jyun-Yan You <jyyou.tw@gmail.com>"
@@ -272,8 +270,7 @@ rec {
         crateName = "cc";
         version = "1.0.50";
         edition = "2018";
-        # Hack to suppress building binaries
-        crateBin = [ { name = ","; path = ","; } ];
+        crateBin = [];
         sha256 = "1kdqm8ka7xg9h56b694pcz29ka33fsz27mzrphqc78gx96h8zqlm";
         authors = [
           "Alex Crichton <alex@alexcrichton.com>"
@@ -1406,7 +1403,6 @@ rec {
       assert (builtins.isList features);
       assert (builtins.isAttrs target);
       assert (builtins.isBool runTests);
-
       let
         rootPackageId = packageId;
         mergedFeatures = mergePackageFeatures (
@@ -1445,11 +1441,18 @@ rec {
                 dependencies = crateConfig.buildDependencies or [];
               };
 
+            filterEnabledDependenciesForThis = dependencies: filterEnabledDependencies {
+              inherit dependencies features target;
+            };
+
             dependenciesWithRenames =
               lib.filter (d: d ? "rename") (
-                (crateConfig.buildDependencies or [])
-                ++ (crateConfig.dependencies or [])
-                ++ devDependencies
+                filterEnabledDependenciesForThis
+                  (
+                    (crateConfig.buildDependencies or [])
+                    ++ (crateConfig.dependencies or [])
+                    ++ devDependencies
+                  )
               );
 
             crateRenames =
@@ -1482,7 +1485,6 @@ rec {
       assert (builtins.isList features);
       assert (builtins.isList dependencies);
       assert (builtins.isAttrs target);
-
       let
         enabledDependencies = filterEnabledDependencies {
           inherit dependencies features target;
@@ -1506,7 +1508,6 @@ rec {
   /* Returns various tools to debug a crate. */
   debugCrate = { packageId, target ? defaultTarget }:
     assert (builtins.isString packageId);
-
     let
       debug = rec {
         # The built tree as passed to buildRustCrate.
@@ -1547,7 +1548,6 @@ rec {
     , target
     }:
       assert (builtins.isAttrs crateConfigs);
-
       let
         prefixValues = prefix: lib.mapAttrs (n: v: { "${prefix}" = v; });
         mergedFeatures =
@@ -1600,7 +1600,6 @@ rec {
       assert (builtins.isAttrs featuresByPackageId);
       assert (builtins.isAttrs target);
       assert (builtins.isBool runTests);
-
       let
         crateConfig = crateConfigs."${packageId}" or (builtins.throw "Package not found: ${packageId}");
         expandedFeatures = expandFeatures (crateConfig.features or {}) features;
@@ -1615,7 +1614,6 @@ rec {
         resolveDependencies = cache: path: dependencies:
           assert (builtins.isAttrs cache);
           assert (builtins.isList dependencies);
-
           let
             enabledDependencies = filterEnabledDependencies {
               inherit dependencies target;
@@ -1661,7 +1659,6 @@ rec {
           resolveDependencies
             cacheWithDependencies "build"
             (crateConfig.buildDependencies or []);
-
       in
         cacheWithAll;
 
@@ -1692,7 +1689,7 @@ rec {
       len = builtins.stringLength prefix;
       startsWithPrefix = builtins.substring 0 len feature == prefix;
     in
-      feature == name
+      (rename == null && feature == name)
       || (rename != null && rename == feature)
       || startsWithPrefix;
 
@@ -1705,7 +1702,6 @@ rec {
   expandFeatures = featureMap: inputFeatures:
     assert (builtins.isAttrs featureMap);
     assert (builtins.isList inputFeatures);
-
     let
       expandFeature = feature:
         assert (builtins.isString feature);
@@ -1715,14 +1711,13 @@ rec {
       sortedUnique outFeatures;
 
   /*
-     Returns the actual dependencies for the given dependency.
+     Returns the actual features for the given dependency.
     
      features: The features of the crate that refers this dependency.
   */
   dependencyFeatures = features: dependency:
     assert (builtins.isList features);
     assert (builtins.isAttrs dependency);
-
     let
       defaultOrNil = if dependency.usesDefaultFeatures or true
       then [ "default" ]
@@ -1730,7 +1725,7 @@ rec {
       explicitFeatures = dependency.features or [];
       additionalDependencyFeatures =
         let
-          dependencyPrefix = dependency.name + "/";
+          dependencyPrefix = (dependency.rename or dependency.name) + "/";
           dependencyFeatures =
             builtins.filter (f: lib.hasPrefix dependencyPrefix f) features;
         in
@@ -1742,7 +1737,6 @@ rec {
   sortedUnique = features:
     assert (builtins.isList features);
     assert (builtins.all builtins.isString features);
-
     let
       outFeaturesSet = lib.foldl (set: feature: set // { "${feature}" = 1; }) {} features;
       outFeaturesUnique = builtins.attrNames outFeaturesSet;
